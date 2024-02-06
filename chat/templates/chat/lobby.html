@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Lobby</title>
+</head>
+<body>
+	<h1>Lets chat!</h1>
+
+	<script type="text/javascript">
+		//This URL represents the WebSocket endpoint that the client will connect to
+		let url = `ws://${window.location.host}/ws/socket-server/`
+
+		// Create object of WebSocket for chatSocket var and passing url that we just created
+		//Establishes a connection to the WebSocket server at the specified URL
+		const chatSocket = new WebSocket(url)
+
+		//chatSocket.onmessage = function(e) { ... } This sets up an event listener for incoming messages on the WebSocket connection
+		//When a message is received, the function specified inside the event listener is executed
+		//The e parameter represents the message event
+		chatSocket.onmessage = function(e){
+			//Inside the event listener function, this line parses the incoming message data as JSON
+			//The e.data property contains the raw message data received from the server
+			//By parsing it as JSON, you can access the message content as JavaScript objects
+			let data = JSON.parse(e.data)
+
+			//This line logs the parsed message data to the browser console
+			console.log('DATA: ', data)
+		}
+	</script>
+</body>
+</html>
