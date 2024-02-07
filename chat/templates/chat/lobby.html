@@ -8,6 +8,10 @@
 <body>
 	<h1>Lets chat!</h1>
 
+	<form id="form">
+		<input type="text" name="message">
+	</form>
+
 	<script type="text/javascript">
 		//This URL represents the WebSocket endpoint that the client will connect to
 		let url = `ws://${window.location.host}/ws/socket-server/`
@@ -28,6 +32,29 @@
 			//This line logs the parsed message data to the browser console
 			console.log('DATA: ', data)
 		}
+
+		let form = document.getElementById('form') //etrieves the HTML form element with the id 'form' and assigns it to the variable form
+
+		//adds an event listener to the form element => event being listened for is the 'submit' event which occurs when the form is submitted
+		//When the form is submitted, the callback function provided as the second argument is executed
+		//(e) => { ... }: This is an arrow function, which serves as the callback function for the 'submit' event listener
+		//It takes one parameter, e, which represents the event object
+		form.addEventListener('submit', (e)=>{
+			//This line prevents the default behavior of the form submission, which would cause the page to reload
+			e.preventDefault()
+
+			//retrieves the value entered into an input field with the name 'message' within the form that was submitted
+			//accesses the form data through the target property of the event object (e) and retrieves the value of the input field
+			let message = e.target.message.value
+
+			// It converts the message data (a JavaScript object with a 'message' property) into a JSON string using JSON.stringify() before sending it
+			chatSocket.send(JSON.stringify({
+				'message':message
+			}))
+			//resets the form fields to their default values.
+			//Ensures that the input field is cleared and ready for the user to enter a new message
+			form.reset()
+		})
 	</script>
 </body>
 </html>
