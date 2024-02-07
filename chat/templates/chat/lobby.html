@@ -12,6 +12,8 @@
 		<input type="text" name="message">
 	</form>
 
+	<div id="messages"></div>
+
 	<script type="text/javascript">
 		//This URL represents the WebSocket endpoint that the client will connect to
 		let url = `ws://${window.location.host}/ws/socket-server/`
@@ -31,9 +33,19 @@
 
 			//This line logs the parsed message data to the browser console
 			console.log('DATA: ', data)
+
+			if (data.type === 'chat'){
+				//If the condition is true, it retrieves the <div> element with the id 'messages' using document.getElementById('messages')
+				let messages = document.getElementById('messages')
+
+				//uses the insertAdjacentHTML() method to insert new HTML content at a specified position ('beforeend', meaning it will be inserted as the last child of the <div> element)
+				messages.insertAdjacentHTML('beforeend', `<div>
+										<p>${data.message}</p>
+										</div>`)
+			}
 		}
 
-		let form = document.getElementById('form') //etrieves the HTML form element with the id 'form' and assigns it to the variable form
+		let form = document.getElementById('form') //retrieves the HTML form element with the id 'form' and assigns it to the variable form
 
 		//adds an event listener to the form element => event being listened for is the 'submit' event which occurs when the form is submitted
 		//When the form is submitted, the callback function provided as the second argument is executed

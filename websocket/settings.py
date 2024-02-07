@@ -45,6 +45,13 @@ INSTALLED_APPS = [
 #Point channaels to route routing configuration
 ASGI_APPLICATION = "websocket.asgi.application"
 
+CHANNEL_LAYERS = {
+	'default':{
+		#InMemoryChannelLayer is used for testing only => for production env use Redis
+		'BACKEND':'channels.layers.InMemoryChannelLayer'
+    }
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
