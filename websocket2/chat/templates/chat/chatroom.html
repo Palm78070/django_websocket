@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Chatroom</title>
+  </head>
+  <body>
+	<textarea id="chat-text" cols="80" rows="30"></textarea>
+	<br>
+		<input id="input" type="text" size="80">
+	</br>
+	<input id="submit" type="button" value="Send">
+
+	<!-- Import django var into html and use it to specify username -->
+
+	<!-- <div id="user-hello"></div> -->
+	<!-- room_name -> var being output -->
+	<!-- |json_script:"room-name": This part is a filter applied to the room_name variable -->
+	<!-- json_script filter provided by Django to serialize the room_name variable into JSON format and embed it within a <script> tag -->
+	{{ room_name|json_script:"room-name" }}
+	{{request.user.username|json_script:"username"}}
+	<script>
+		const user_username = JSON.parse(document.getElementById('username').textContent)
+		// parse json value(element from id 'room-name') to be access as obj in js
+		const roomName = JSON.parse(document.getElementById('room-name').textContent)
+
+		//Send msg when click send button
+		//use document.querySelector().onclick to send msg when the first element with id "submit" is clicked
+		document.querySelector('#submit').onclick = function (e) {
+			const messageInputDom = document.querySelector('#input');
+			const message = messageInputDom.value;
+			chatSocket.send(JSON.stringify({
+				'message':message,
+				'username':user_username,
+			}));
+			messageInputDom.value = '';
+		};
+
+		const chatSocket = new WebSocket(
+			'ws://' +
+			window.location.host +
+			'/ws/chat/' +
+			roomName +
+			'/'
+		);
+
+		chatSocket.onmessage = function(e) {
+			const data = JSON.parse(e.data);
+			console.log(data)
+			// document.querySelector() method to select an HTML element with the specified CSS selector
+			//CSS selector used to "find" (or select) the HTML elements you want to style
+			//In this case, it's looking for an element with the id "#user-hello"
+			//allows you to get or set the HTML content of an element.In this case it's set div with id user-hello as data.tester
+			// document.querySelector('#user-hello').innerHTML = (data.tester)
+			document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n')
+		}
+	</script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

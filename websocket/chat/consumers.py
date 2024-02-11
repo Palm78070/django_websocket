@@ -19,7 +19,7 @@ class ChatConsumer(WebsocketConsumer):
 		self.room_group_name = 'test' #Var that store group name
 
 		#use the following function to add group and add user channel to group
-		#group_add is an asynchronous function and may not be compatible with synchronous code, async_to_sync is used to convert it to synchronous cod
+		#group_add is an asynchronous function and may not be compatible with synchronous code, async_to_sync is used to convert it to synchronous code
 		async_to_sync(self.channel_layer.group_add)(
 			self.room_group_name,
 			self.channel_name
