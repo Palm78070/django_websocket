@@ -7,6 +7,7 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 		#['url_route']: This part of the code accesses a key within the scope dictionary. The url_route key contains information about the URL routing, including any named parameters captured from the URL pattern
 		#'kwargs' is another key that holds a dictionary of named URL parameters captured from the URL pattern.
 		#This accesses the value of the specific URL parameter named 'room_name'. It's extracting the room name from the URL routing information
+		#https://channels.readthedocs.io/en/latest/topics/routing.html
 		self.room_name = self.scope['url_route']['kwargs']['room_name']
 		self.room_group_name = 'chat_%s' % self.room_name
 		await self.channel_layer.group_add(
