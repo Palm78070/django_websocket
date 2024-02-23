@@ -13,13 +13,12 @@
   <body>
 	<center><h1>Hello, welcome to {{ room_name }} {{ request.user }}</h1></center>
 	<br>
-	{% if request.user.is_authenticated %}
-		<!-- <center>Logout the chat Page <a href="{% url 'logout-user' %}">Logout</a></center> -->
+	<!-- {% if request.user.is_authenticated %}
 		<form method="post" action="{% url 'logout-user' %}">
 			{% csrf_token %}
 			<button type="submit">Logout</button>
 		</form>
-	{% endif %}
+	{% endif %} -->
 	<textarea id="chat-text" cols="80" rows="30"></textarea>
 	<br><input id="input" type="text" size="80"></br>
 	<input id="submit" type="button" value="Send">

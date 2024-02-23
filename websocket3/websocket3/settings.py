@@ -143,6 +143,6 @@ CHANNEL_LAYERS = {
 }
 
 # LOGIN_REDIRECT_URL = "/chat/redirect-room/<str:room_name>"
-LOGIN_REDIRECT_URL = "/chat/redirect-room"
+LOGIN_REDIRECT_URL = "index"
 LOGOUT_REDIRECT_URL = "login-user"
 
