@@ -23,7 +23,9 @@
 	{% endif %}
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+	{{ request.user.username|json_script:"user_username" }}
 	<script>
+		const user1 = JSON.parse(document.getElementById('user_username').textContent)
 		//starts a jQuery function that is executed when the document is fully loaded
 		//It's a common practice to wrap jQuery code inside this function to ensure that it doesn't run until the document is fully loaded
 		$(document).ready(function() {
@@ -38,8 +40,13 @@
 
 					//iterates over each user in the user_list array within the response data using the forEach() method
 					if (response && response.user_list) {
-						response.user_list.forEach(function(user) {
-							other_users_html += '<a href="/chat/room/' + user + '/">' + user + '</a><br>';
+						let count = 1
+						response.user_list.forEach(function(user2) {
+							let user_arr = [user1, user2]
+							user_arr.sort()
+							let roomName = `room_${user_arr[0]}_${user_arr[1]}`
+							other_users_html += `<a href="/chat/room/${roomName}?username=` + user2 + '">' + user2 + '</a><br>';
+							++count;
 						});
 					} else {
 						console.error('User list is empty or undefined');

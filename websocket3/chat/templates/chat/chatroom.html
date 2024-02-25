@@ -11,14 +11,22 @@
     <title>Chatroom</title>
   </head>
   <body>
-	<center><h1>Hello, welcome to {{ room_name }} {{ request.user }}</h1></center>
+	<!-- <center><h1 id="chat-header">{{ request.user }} chat with <span id="recipient"></span></h1></center> -->
+	<center><h1 id="chat-header"></h1></center>
 	<br>
-	<!-- {% if request.user.is_authenticated %}
-		<form method="post" action="{% url 'logout-user' %}">
-			{% csrf_token %}
-			<button type="submit">Logout</button>
-		</form>
-	{% endif %} -->
+	{% if request.user.is_authenticated %}
+		<div style="white-space: nowrap;">
+			<form method="post" action="{% url 'index' %}" style="display: inline-block;">
+				{% csrf_token %}
+				<button type="submit">Back to homepage</button>
+			</form>
+			<form method="post" action="{% url 'logout-user' %}" style="display: inline-block;">
+				{% csrf_token %}
+				<button type="submit">Logout</button>
+			</form>
+		</div>
+	{% endif %}
+
 	<textarea id="chat-text" cols="80" rows="30"></textarea>
 	<br><input id="input" type="text" size="80"></br>
 	<input id="submit" type="button" value="Send">
@@ -30,12 +38,16 @@
 		const roomName = JSON.parse(document.getElementById('room-name').textContent)
 		const userName = JSON.parse(document.getElementById('user_username').textContent)
 
+		const urlParams = new URLSearchParams(window.location.search);
+		const recipient = urlParams.get('username');
+		document.querySelector('#chat-header').textContent = userName + ' chat with ' + recipient;
+
 		document.querySelector('#submit').onclick = function (e) {
 			const messageInputDom = document.querySelector('#input');
 			const message = messageInputDom.value;
 			chatSocket.send(JSON.stringify({
 				'message' : message,
-				'username' : userName
+				'username' : userName,
 			}));
 			messageInputDom.value = '';
 		}
@@ -43,10 +55,11 @@
 		const chatSocket = new WebSocket(
 			'ws://' +
 			window.location.host +
-			'/ws/chat/' +
+			'/ws/chat/room/' +
 			roomName +
 			'/'
 		);
+
 		chatSocket.onmessage = function (e) {
 			const data = JSON.parse(e.data)
 			console.log(data)
