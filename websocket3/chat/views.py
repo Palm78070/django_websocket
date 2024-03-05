@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import json
+
 # Create your views here.
 def index(request):
 	print("!!! In index function !!!")
@@ -42,3 +46,28 @@ def get_user_list(request):
 		# return JsonResponse({'user_list' : users})
 	else:
 		return JsonResponse({'error' : 'User not authenticated'})
+
+def send_message(request):
+	print("\n!!!In send_message!!!\n")
+	if request.method == 'POST':
+		data = json.loads(request.body)
+		message = data.get('message')
+		username = data.get('username')
+		room_name = data.get('room_name')  # Make sure to include the room name in the request
+
+		print(f"views.py => Room name: {room_name} => {username}: {message}")
+
+		# Broadcast the message to the WebSocket room
+		channel_layer = get_channel_layer()
+		async_to_sync(channel_layer.group_send)(
+			f"chat_{room_name}",
+			{
+				"type": "chat.message",
+				"message": message,
+				"username": username
+			}
+		)
+
+		return JsonResponse({'status': 'Message sent successfully'})
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=400)

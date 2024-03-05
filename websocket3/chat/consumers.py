@@ -42,6 +42,8 @@ class ChatRoomConsumer(AsyncWebsocketConsumer):
 		message = event['message']
 		username = event['username']
 
+		print(f"consumers.py => Received message from {username}: {message}")
+
 		await self.send(text_data=json.dumps({
 			"message" : message,
 			"username" : username,
