@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from .models import ChatRoom, Chat
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -27,9 +28,30 @@ def room(request, room_name):
 	print("!!! In room function !!!")
 	if not request.user.is_authenticated:
 		return redirect("login-user")
+
+	#Queries db for a ChatRoom obj with the specified room_name
+	#If found, room will contain the first matching ChatRoom obj, If not found, it will be None
+	room = ChatRoom.objects.filter(name=room_name).first()
+	chats = []
+
+	if room: #If a room is found in db => Fetches all Chat obj associated with that room
+		chats = Chat.objects.filter(room=room)
+	else: #If room not found, Creates a new ChatRoom obj with the given room_name + save obj in db
+		room = ChatRoom(name=room_name)
+		room.save()
+
 	return render(request, "chat/chatroom.html", {
-		"room_name" : room_name
+		"room_name" : room_name,
+		"chats" : chats
 	})
+
+# def room(request, room_name):
+# 	print("!!! In room function !!!")
+# 	if not request.user.is_authenticated:
+# 		return redirect("login-user")
+# 	return render(request, "chat/chatroom.html", {
+# 		"room_name" : room_name
+# 	})
 
 def get_user_list(request):
 	print("\n!!!In get_user_list function!!!\n")
@@ -50,6 +72,7 @@ def get_user_list(request):
 def send_message(request):
 	print("\n!!!In send_message!!!\n")
 	if request.method == 'POST':
+		#json.loads() used to deserialize json string into python obj
 		data = json.loads(request.body)
 		message = data.get('message')
 		username = data.get('username')
@@ -59,6 +82,7 @@ def send_message(request):
 
 		# Broadcast the message to the WebSocket room
 		channel_layer = get_channel_layer()
+		#Because view function is synchronous => we have to change it to sync first
 		async_to_sync(channel_layer.group_send)(
 			f"chat_{room_name}",
 			{

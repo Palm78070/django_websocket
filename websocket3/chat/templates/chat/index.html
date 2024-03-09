@@ -45,7 +45,7 @@
 							let user_arr = [user1, user2]
 							user_arr.sort()
 							let roomName = `room_${user_arr[0]}_${user_arr[1]}`
-							other_users_html += `<a href="/chat/room/${roomName}?username=` + user2 + '">' + user2 + '</a><br>';
+							other_users_html += `<a href="/chat/room/${roomName}?recipient=` + user2 + '">' + user2 + '</a><br>';
 							++count;
 						});
 					} else {

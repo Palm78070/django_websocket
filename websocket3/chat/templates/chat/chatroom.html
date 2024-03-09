@@ -27,7 +27,26 @@
 		</div>
 	{% endif %}
 
-	<textarea id="chat-text" cols="80" rows="30"></textarea>
+	<!-- <textarea id="chat-text" cols="80" rows="30">
+		<div>
+			{% for chat in chats.all %}
+				{% if chat.user.id == request.user.id %}
+					{{ chat.content }}
+				{% endif %}
+			{% endfor %}
+		</div>
+	</textarea> -->
+	<div id="chat-text" contenteditable="true" style="width: 100%; height: 300px; border: 1px solid #ccc; padding: 5px; overflow-y: auto;">
+		<div>
+			{% for chat in chats.all %}
+				{% if chat.user.id == request.user.id %}
+					{{ chat.content }}
+					<br>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+
 	<br><input id="input" type="text" size="80"></br>
 	<input id="submit" type="button" value="Send">
 
@@ -39,7 +58,8 @@
 		const userName = JSON.parse(document.getElementById('user_username').textContent)
 
 		const urlParams = new URLSearchParams(window.location.search);
-		const recipient = urlParams.get('username');
+		//const recipient = urlParams.get('username');
+		const recipient = urlParams.get('recipient');
 		document.querySelector('#chat-header').textContent = userName + ' chat with ' + recipient;
 
 		document.querySelector('#submit').onclick = function (e) {
@@ -48,6 +68,7 @@
 			chatSocket.send(JSON.stringify({
 				'message' : message,
 				'username' : userName,
+				'recipient': recipient,
 			}));
 			messageInputDom.value = '';
 		}
@@ -65,7 +86,9 @@
 			console.log(data)
 			console.log(roomName)
 			console.log(userName)
-			document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n')
+			// document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n')
+			document.querySelector('#chat-text').innerHTML += '<div>' + data.username + ': ' + data.message + '</div>';
+			chatText.scrollTop = chatText.scrollHeight; // Automatically scroll to bottom
 		}
 
 		// Function to handle incoming messages without manual triggering
