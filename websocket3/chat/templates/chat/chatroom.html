@@ -86,23 +86,11 @@
 			console.log(data)
 			console.log(roomName)
 			console.log(userName)
-			// document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n')
 			document.querySelector('#chat-text').innerHTML += '<div>' + data.username + ': ' + data.message + '</div>';
+			// document.querySelector('#chat-text').setHTML += '<div>' + data.username + ': ' + data.message + '</div>';
+			// document.querySelector('#chat-text').textContent += '<div>' + data.username + ': ' + data.message + '</div>';
 			chatText.scrollTop = chatText.scrollHeight; // Automatically scroll to bottom
 		}
-
-		// Function to handle incoming messages without manual triggering
-		// function receiveMessage(data) {
-		// 	console.log(data);
-		// 	console.log(roomName);
-		// 	console.log(userName);
-		// 	document.querySelector('#chat-text').value += (data.username + ': ' + data.message + '\n');
-		// }
-
-    	// Add event listener to WebSocket object to handle incoming messages
-		// chatSocket.addEventListener('message', function (event) {
-		// 	receiveMessage(JSON.parse(event.data));
-    	// });
 	</script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

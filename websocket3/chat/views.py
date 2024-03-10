@@ -71,6 +71,10 @@ def get_user_list(request):
 
 def send_message(request):
 	print("\n!!!In send_message!!!\n")
+	if not request.user.is_authenticated:
+		print("\nUser is not authenticated\n")
+		return JsonResponse({'error': 'User is not authenticated'}, status=401)
+
 	if request.method == 'POST':
 		#json.loads() used to deserialize json string into python obj
 		data = json.loads(request.body)
