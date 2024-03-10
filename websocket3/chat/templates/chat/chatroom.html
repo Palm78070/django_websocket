@@ -81,14 +81,14 @@
 			'/'
 		);
 
+		const chatText = document.querySelector('#chat-text');
 		chatSocket.onmessage = function (e) {
 			const data = JSON.parse(e.data)
 			console.log(data)
 			console.log(roomName)
 			console.log(userName)
-			document.querySelector('#chat-text').innerHTML += '<div>' + data.username + ': ' + data.message + '</div>';
-			// document.querySelector('#chat-text').setHTML += '<div>' + data.username + ': ' + data.message + '</div>';
-			// document.querySelector('#chat-text').textContent += '<div>' + data.username + ': ' + data.message + '</div>';
+			// document.querySelector('#chat-text').innerHTML += '<div>' + data.username + ': ' + data.message + '</div>';
+			chatText.innerHTML += '<div>' + data.username + ': ' + data.message + '</div>';
 			chatText.scrollTop = chatText.scrollHeight; // Automatically scroll to bottom
 		}
 	</script>
